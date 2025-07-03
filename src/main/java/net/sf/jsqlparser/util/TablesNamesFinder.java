@@ -968,7 +968,7 @@ public class TablesNamesFinder<Void>
     }
 
     @Override
-    public <S> Void visit(SelectItem<?> item, S context) {
+    public <S> Void visit(SelectItem<? extends Expression> item, S context) {
         item.getExpression().accept(this, context);
         return null;
     }
@@ -1269,7 +1269,7 @@ public class TablesNamesFinder<Void>
     }
 
     @Override
-    public <S> Void visit(RowConstructor<?> rowConstructor, S context) {
+    public <S> Void visit(RowConstructor<? extends Expression> rowConstructor, S context) {
         for (Expression expr : rowConstructor) {
             expr.accept(this, context);
         }
