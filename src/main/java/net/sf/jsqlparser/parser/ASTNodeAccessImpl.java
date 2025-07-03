@@ -11,6 +11,7 @@ package net.sf.jsqlparser.parser;
 
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.Arrays;
 
 public class ASTNodeAccessImpl implements ASTNodeAccess {
 
@@ -28,7 +29,7 @@ public class ASTNodeAccessImpl implements ASTNodeAccess {
 
     public StringBuilder appendTo(StringBuilder builder) {
         // don't add spaces around the following punctuation
-        final Set<String> punctuation = new TreeSet<>(Set.of(".", "[", "]"));
+        final Set<String> punctuation = new TreeSet<>(Arrays.asList(".", "[", "]"));
 
         SimpleNode simpleNode = getASTNode();
         if (simpleNode != null) {
