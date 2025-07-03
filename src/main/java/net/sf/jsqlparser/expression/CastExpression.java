@@ -15,7 +15,6 @@ import net.sf.jsqlparser.statement.create.table.ColumnDefinition;
 import net.sf.jsqlparser.statement.select.Select;
 
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
