@@ -138,6 +138,14 @@ java {
     }
 }
 
+sourceSets {
+    main {
+        java {
+            exclude 'module-info.java'
+        }
+    }
+}
+
 javadoc {
     include("build/generated/javacc/net/sf/jsqlparser/parser/*.java" )
     if(JavaVersion.current().isJava9Compatible()) {
