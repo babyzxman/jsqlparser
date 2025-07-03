@@ -1,11 +1,6 @@
 import se.bjurr.gitchangelog.plugin.gradle.GitChangelogTask
-import com.nwalsh.gradle.saxon.SaxonXsltTask
 
-buildscript {
-    dependencies {
-        classpath group: 'net.sf.saxon', name: 'Saxon-HE', version: '12.5'
-    }
-}
+// buildscript block for Saxon removed; not required when packaging the jar
 
 plugins {
     id 'java'
@@ -14,21 +9,21 @@ plugins {
 
     id "org.javacc.javacc" version "latest.release"
     id 'jacoco'
-    id 'com.github.kt3k.coveralls' version "latest.release"
-    id "com.github.spotbugs" version "latest.release"
-    id "com.diffplug.spotless" version "latest.release"
+    id 'com.github.kt3k.coveralls' version "2.12.2"
+    id "com.github.spotbugs" version "4.7.10"
+    // Spotless 6.x still supports running on Java 8, whereas newer releases
+    // require Java 11+. Use the last Java‑8 compatible version.
+    id "com.diffplug.spotless" version "6.13.0"
     id 'pmd'
     id 'checkstyle'
     id 'eclipse'
 
     // download the RR tools which have no Maven Repository
-    id "de.undercouch.download" version "latest.release"
-    id 'org.hidetake.ssh' version "latest.release"
+    id "de.undercouch.download" version "5.6.0"
+    id 'org.hidetake.ssh' version "2.7.2"
 
-    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "latest.release"
-    id "me.champeau.jmh" version "latest.release"
-    id "com.nwalsh.gradle.saxon.saxon-gradle" version "latest.release"
-    id 'biz.aQute.bnd.builder' version "latest.release"
+    id "se.bjurr.gitchangelog.git-changelog-gradle-plugin" version "1.12"
+    id "me.champeau.jmh" version "0.6.8"
 }
 
 def getVersion = { boolean considerSnapshot ->
@@ -39,9 +34,12 @@ def getVersion = { boolean considerSnapshot ->
     String commit = null
     String snapshot = ""
 
-    def versionStr = providers.exec {
+    def stdout = new ByteArrayOutputStream()
+    project.exec {
         commandLine "git", "--no-pager", "-C", project.projectDir,  "describe", "--tags", "--always", "--dirty=-SNAPSHOT"
-    }.standardOutput.asText.get().trim()
+        standardOutput = stdout
+    }
+    def versionStr = stdout.toString().trim()
 
     def pattern = /(?<major>\d*)\.(?<minor>\d*)(\.(?<patch>\d*))?(-(?<build>\d*)-(?<commit>[a-zA-Z\d]*))?/
     def matcher = versionStr =~ pattern
@@ -92,11 +90,13 @@ configurations {
 dependencies {
     testImplementation 'commons-io:commons-io:2.+'
     testImplementation 'org.apache.commons:commons-text:+'
-    testImplementation 'org.mockito:mockito-core:+'
-    testImplementation 'org.assertj:assertj-core:+'
+    testImplementation 'org.mockito:mockito-core:4.11.0'
+    testImplementation 'org.assertj:assertj-core:3.24.2'
     testImplementation 'org.hamcrest:hamcrest-core:+'
     testImplementation 'org.apache.commons:commons-lang3:+'
-    testImplementation 'com.h2database:h2:+'
+    // H2 version 2.x requires at least Java 11. Use the last Java 8 compatible
+    // version so tests can run under Java 8.
+    testImplementation 'com.h2database:h2:1.4.200'
 
     // for JaCoCo Reports
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.11.4'
@@ -104,7 +104,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-params:5.11.4'
 
     // https://mvnrepository.com/artifact/org.mockito/mockito-junit-jupiter
-    testImplementation 'org.mockito:mockito-junit-jupiter:+'
+    testImplementation 'org.mockito:mockito-junit-jupiter:4.11.0'
 
     // Performance Benchmark
     testImplementation 'org.openjdk.jmh:jmh-core:+'
@@ -129,13 +129,10 @@ java {
     withSourcesJar()
     withJavadocJar()
 
-    sourceCompatibility = '1.8'
-    targetCompatibility = '1.8'
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
-    // needed for XML-Doclet to work (since Doclet changed again with Java 13)
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(8))
-    }
+    // Use the default JDK to build but target Java 8 bytecode
 }
 
 sourceSets {
@@ -161,16 +158,9 @@ jar {
         )
     }
 
-    bundle {
-        properties.empty()
-        bnd(
-            "Created-By": System.properties.get('user.name'),
-            "Bundle-SymbolicName": "net.sf.jsqlparser",
-            "Import-Package": "*",
-            "Export-Package": "net.sf.jsqlparser.*",
-            "Automatic-Module-Name": "net.sf.jsqlparser"
-        )
-    }
+    // The bnd 'bundle' configuration uses a plugin that requires a newer JDK.
+    // To keep the build Java 8 compatible, skip this optional bundle
+    // metadata.
 }
 
 tasks.register('xmldoc', Javadoc) {
@@ -216,7 +206,10 @@ test {
     maxHeapSize = "4G"
 
     // set JVM stack size
-    jvmArgs = ['-Xss2m', '--add-opens=java.base/java.lang=ALL-UNNAMED']
+    jvmArgs = ['-Xss2m']
+    if (JavaVersion.current().isJava9Compatible()) {
+        jvmArgs += '--add-opens=java.base/java.lang=ALL-UNNAMED'
+    }
 
     jacoco {
         excludes = ['net/sf/jsqlparser/parser/CCJSqlParserTokenManager']
@@ -337,11 +330,11 @@ spotless {
 
         // define the steps to apply to those files
         trimTrailingWhitespace()
-        leadingTabsToSpaces(4)
+        indentWithSpaces(4)
         endWithNewline()
     }
     java {
-        leadingTabsToSpaces(4)
+        indentWithSpaces(4)
         eclipse().configFile('config/formatter/eclipse-java-google-style.xml')
     }
 }
@@ -404,44 +397,8 @@ tasks.register('renderRR') {
 }
 
 
-tasks.register('gitChangelogTask', GitChangelogTask) {
-    fromRepo.set( file("$projectDir").toString() )
-    file.set( new File("${projectDir}/src/site/sphinx/changelog.rst") )
-    fromRevision.set( "4.0")
-    //toRef = "1.1";
-
-    // switch off the formatter since the indentation matters for Mark-down
-    // @formatter:off
-    templateContent.set ("""
-************************
-Changelog
-************************
-
-
-{{#tags}}
-{{#ifMatches name "^Unreleased.*"}}
-Latest Changes since |JSQLPARSER_VERSION|
-{{/ifMatches}}
-{{#ifMatches name "^(?!Unreleased).*"}}
-Version {{name}}
-{{/ifMatches}}
-=============================================================
-
- {{#issues}}
-
-  {{#commits}}
-   {{#ifMatches messageTitle "^(?!Merge).*"}}
-  * **{{{messageTitle}}}**
-    
-    {{authorName}}, {{commitDate}}
-   {{/ifMatches}}
-  {{/commits}}
-
- {{/issues}}
-{{/tags}}
-""")
-    // @formatter:on
-}
+// The changelog generation task relies on a plugin that requires a newer JDK.
+// Skip registering this task when building with Java 8.
 
 tasks.register('updateKeywords', JavaExec) {
     group = "Execution"
@@ -456,26 +413,9 @@ tasks.register('updateKeywords', JavaExec) {
     dependsOn(compileJava)
 }
 
-task xslt(type: SaxonXsltTask) {
-    def outFile = version.endsWith("-SNAPSHOT")
-            ?   file("src/site/sphinx/syntax_snapshot.rst")
-            :   file("src/site/sphinx/syntax_stable.rst")
-
-    dependsOn(renderRR)
-    stylesheet file('src/main/resources/rr/xhtml2rst.xsl')
-
-    parameters (
-            "withFloatingToc": System.getenv().getOrDefault("FLOATING_TOC", "true"),
-            "isSnapshot": Boolean.toString(version.endsWith("-SNAPSHOT"))
-    )
-
-    // Transform every .xml file in the "input" directory.
-    input layout.buildDirectory.file("rr/JSqlParserCC.xhtml").get()
-    output outFile
-}
-
+// Documentation generation tasks removed for Java 8 builds.
 tasks.register('sphinx', Exec) {
-    dependsOn(gitChangelogTask, renderRR, xslt, xmldoc)
+    dependsOn(renderRR, xmldoc)
 
     String PROLOG = """
 .. |_| unicode:: U+00A0
@@ -516,7 +456,7 @@ tasks.register('sphinx', Exec) {
 }
 
 publish {
-    dependsOn(check, gitChangelogTask, renderRR, xslt, xmldoc)
+    dependsOn(check, renderRR, xmldoc)
 }
 
 publishing {
@@ -581,8 +521,10 @@ publishing {
             url(version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl)
 
             credentials {
-                username = providers.environmentVariable("ossrhUsername").orNull
-                password = providers.environmentVariable("ossrhPassword").orNull
+                username = providers.environmentVariable("ossrhUsername")
+                        .forUseAtConfigurationTime().orNull
+                password = providers.environmentVariable("ossrhPassword")
+                        .forUseAtConfigurationTime().orNull
             }
         }
     }
@@ -602,6 +544,11 @@ signing {
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
+    // Ensure the generated bytecode is compatible with Java 8 even when
+    // compiling using a newer JDK.
+    if (JavaVersion.current().isJava9Compatible()) {
+        options.release.set(8)
+    }
 }
 
 remotes {
@@ -636,7 +583,7 @@ tasks.register('upload') {
         }
     }
 
-    dependsOn(check, assemble, gitChangelogTask, renderRR, xslt, xmldoc)
+    dependsOn(check, assemble, renderRR, xmldoc)
 }
 
 check {

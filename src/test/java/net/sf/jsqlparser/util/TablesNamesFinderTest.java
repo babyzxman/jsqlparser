@@ -615,7 +615,7 @@ public class TablesNamesFinderTest {
                 ";";
         //@formatter:on
 
-        TablesNamesFinder<Void> finder = new TablesNamesFinder<>() {
+        TablesNamesFinder<Void> finder = new TablesNamesFinder<Void>() {
             @Override
             public <S> Void visit(Table table, S context) {
                 String schemaName = table.getSchemaName();

@@ -11,6 +11,7 @@ package net.sf.jsqlparser.schema;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -36,7 +37,7 @@ public class ColumnTest {
 
     @Test
     public void testConstructorNameParts() {
-        Column column = new Column(List.of("schema", "table", "column"));
+        Column column = new Column(Arrays.asList("schema", "table", "column"));
         assertThat(column.getColumnName()).isEqualTo("column");
 
         Table table = column.getTable();
@@ -46,7 +47,7 @@ public class ColumnTest {
 
     @Test
     public void testConstructorNamePartsAndDelimiters() {
-        Column column = new Column(List.of("a", "b", "c", "d"), List.of(":", ".", ":"));
+        Column column = new Column(Arrays.asList("a", "b", "c", "d"), Arrays.asList(":", ".", ":"));
         assertThat(column.getColumnName()).isEqualTo("d");
 
         Table table = column.getTable();

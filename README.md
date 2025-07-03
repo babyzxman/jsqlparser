@@ -67,7 +67,27 @@ For details, please see https://storage.googleapis.com/gweb-research2023-media/p
 
 JSQLParser-4.9 was the last JDK8 compatible version. JSQLParser-5.0 and later depend on JDK11 and introduce API breaking changes to the AST Visitors. Please see the Migration Guide for the details.
 
-Building JSQLParser-5.1 and newer with Gradle will depend on a JDK17 toolchain due to the used plugins.
+Building JSQLParser-5.1 and newer with Gradle requires a JDK17+ runtime because several plugins no longer support older Java versions. The parser itself still targets Java 8 and can be compiled with a Java 8 toolchain.
+You can install OpenJDK 8 via apt if you need a Java 8 compiler:
+`sudo apt-get update && sudo apt-get install -y openjdk-8-jdk`
+After installation, select Java 8 with `update-alternatives` or set `JAVA_HOME` accordingly.
+You can install Maven via apt:
+`sudo apt-get update && sudo apt-get install -y maven`
+If you want to build the project using Maven with a Java 8 toolchain, make sure Java 8 is selected and then run:
+
+```bash
+export JAVA_HOME=/path/to/jdk8
+mvn -DskipTests=true compile
+# or
+mvn -q test
+```
+To build the parser as a jar using Gradle (running on JDK 17+ but compiling for Java 8), execute:
+
+```bash
+./gradlew clean jar
+```
+The jar will be written to `build/libs/`.
+
 
 ## Performance
 
