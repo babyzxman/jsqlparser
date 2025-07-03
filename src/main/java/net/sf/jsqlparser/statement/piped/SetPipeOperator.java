@@ -7,6 +7,7 @@
  * Dual licensed under GNU LGPL 2.1 or Apache License 2.0
  * #L%
  */
+// license header omitted for brevity
 package net.sf.jsqlparser.statement.piped;
 
 import net.sf.jsqlparser.statement.update.UpdateSet;
