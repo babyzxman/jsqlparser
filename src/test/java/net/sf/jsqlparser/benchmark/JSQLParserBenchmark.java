@@ -49,7 +49,9 @@ public class JSQLParserBenchmark {
 
         // Adjust path as necessary based on where source root is during test execution
         Path path = Paths.get("src/test/resources/net/sf/jsqlparser/performance.sql");
-        sqlContent = Files.readString(path, StandardCharsets.UTF_8);
+        // Files.readString is only available starting with Java 11.
+        // Use readAllBytes for Java 8 compatibility.
+        sqlContent = new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
         executorService = Executors.newSingleThreadExecutor();
     }
 

@@ -15,6 +15,7 @@ import net.sf.jsqlparser.statement.select.SelectItem;
 import net.sf.jsqlparser.test.TestUtils;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 class StructTypeTest {
@@ -57,7 +58,7 @@ class StructTypeTest {
     void testStructTypeConstructorDuckDB() throws JSQLParserException {
         // @todo: check why the white-space after the "{" is needed?!
         String sqlStr = "SELECT { t:'abc',len:5}";
-        List<SelectItem<?>> selectItems = List.of(
+        List<SelectItem<?>> selectItems = Arrays.asList(
                 new SelectItem<>("abc", "t"), new SelectItem<>(5, "len"));
         StructType struct = new StructType(StructType.Dialect.DUCKDB, selectItems);
         PlainSelect select = new PlainSelect().withSelectItems(new SelectItem<>(struct));

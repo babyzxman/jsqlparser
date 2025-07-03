@@ -29,7 +29,7 @@ public class ConnectExpressionsVisitorTest {
     public void testVisit_PlainSelect_concat() throws JSQLParserException {
         String sql = "select a,b,c from test";
         Select select = (Select) parserManager.parse(new StringReader(sql));
-        ConnectExpressionsVisitor<Void> instance = new ConnectExpressionsVisitor<>() {
+        ConnectExpressionsVisitor<Void> instance = new ConnectExpressionsVisitor<Void>() {
             @Override
             protected BinaryExpression createBinaryExpression() {
                 return new Concat();
@@ -44,7 +44,7 @@ public class ConnectExpressionsVisitorTest {
     public void testVisit_PlainSelect_addition() throws JSQLParserException {
         String sql = "select a,b,c from test";
         Select select = (Select) parserManager.parse(new StringReader(sql));
-        ConnectExpressionsVisitor<Void> instance = new ConnectExpressionsVisitor<>("testexpr") {
+        ConnectExpressionsVisitor<Void> instance = new ConnectExpressionsVisitor<Void>("testexpr") {
             @Override
             protected BinaryExpression createBinaryExpression() {
                 return new Addition();

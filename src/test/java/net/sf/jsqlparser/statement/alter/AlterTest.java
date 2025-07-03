@@ -2006,7 +2006,7 @@ public class AlterTest {
         assertEquals("idx_name", index.getName());
         assertEquals("INDEX", index.getIndexKeyword());
         assertEquals("BTREE", index.getUsing());
-        assertEquals(List.of("col"), index.getColumnsNames());
+        assertEquals(Arrays.asList("col"), index.getColumnsNames());
 
         assertSqlCanBeParsedAndDeparsed(sql);
     }

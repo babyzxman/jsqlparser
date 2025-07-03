@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static net.sf.jsqlparser.test.TestUtils.assertSqlCanBeParsedAndDeparsed;
@@ -39,6 +40,6 @@ public class ExpressionDelimiterTest {
         PlainSelect parsed = (PlainSelect) assertSqlCanBeParsedAndDeparsed(statement);
         Column column = parsed.getSelectItem(0).getExpression(Column.class);
         assertEquals(".", column.getTableDelimiter());
-        assertEquals(List.of(":", "."), column.getTable().getNamePartDelimiters());
+        assertEquals(Arrays.asList(":", "."), column.getTable().getNamePartDelimiters());
     }
 }

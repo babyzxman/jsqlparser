@@ -15,7 +15,7 @@ import net.sf.jsqlparser.expression.operators.relational.ParenthesedExpressionLi
  * @deprecated This class is deprecated since version 5.0. Use {@link ParenthesedExpressionList}
  *             instead. The reason for deprecation is the ambiguity and redundancy.
  */
-@Deprecated(since = "5.0", forRemoval = true)
+@Deprecated
 public class Parenthesis extends ParenthesedExpressionList<Expression> {
     public Expression getExpression() {
         return isEmpty() ? null : get(0);

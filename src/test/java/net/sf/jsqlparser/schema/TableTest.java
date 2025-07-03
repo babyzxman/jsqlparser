@@ -17,6 +17,7 @@ import net.sf.jsqlparser.util.deparser.ExpressionDeParser;
 import net.sf.jsqlparser.util.deparser.SelectDeParser;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -80,7 +81,7 @@ public class TableTest {
     @Test
     public void testConstructorDelimitersInappropriateSize() {
         assertThatThrownBy(
-                () -> new Table(List.of("a", "b", "c"), List.of("too", "many", "delimiters")))
+                () -> new Table(Arrays.asList("a", "b", "c"), Arrays.asList("too", "many", "delimiters")))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(
                         "the length of the delimiters list must be 1 less than nameParts");

@@ -10,6 +10,7 @@
 package net.sf.jsqlparser.schema;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -189,8 +190,7 @@ public class Table extends ASTNodeAccessImpl implements FromItem, MultiPartName 
         // of quotes
         // however, some people believe that Dots in Names are a good idea, so provide a switch-off
         boolean splitNamesOnDelimiter = System.getProperty("SPLIT_NAMES_ON_DELIMITER") == null ||
-                !List
-                        .of("0", "N", "n", "FALSE", "false", "OFF", "off")
+                !Arrays.asList("0", "N", "n", "FALSE", "false", "OFF", "off")
                         .contains(System.getProperty("SPLIT_NAMES_ON_DELIMITER"));
 
         if (MultiPartName.isQuoted(name) && name.contains(".") && splitNamesOnDelimiter) {
