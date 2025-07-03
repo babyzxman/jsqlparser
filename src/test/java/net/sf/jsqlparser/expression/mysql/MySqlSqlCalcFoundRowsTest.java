@@ -52,7 +52,7 @@ public class MySqlSqlCalcFoundRowsTest {
     }
 
     private void accept(Statement statement, final MySqlSqlCalcFoundRowRef ref) {
-        SelectVisitorAdapter<Void> selectVisitorAdapter = new SelectVisitorAdapter<>() {
+        SelectVisitorAdapter<Void> selectVisitorAdapter = new SelectVisitorAdapter<Void>() {
             @Override
             public <S> Void visit(PlainSelect plainSelect, S parameters) {
                 ref.sqlCalcFoundRows = plainSelect.getMySqlSqlCalcFoundRows();

@@ -7,6 +7,7 @@
  * Dual licensed under GNU LGPL 2.1 or Apache License 2.0
  * #L%
  */
+// license header omitted for brevity
 package net.sf.jsqlparser.statement.piped;
 
 import net.sf.jsqlparser.statement.update.UpdateSet;
@@ -119,8 +120,8 @@ public class SetPipeOperator extends PipeOperator {
         return updateSets.indexOf(o);
     }
 
-    public <T> T[] toArray(IntFunction<T[]> generator) {
-        return updateSets.toArray(generator);
+    public UpdateSet[] toArray(IntFunction<UpdateSet[]> generator) {
+        return updateSets.toArray(generator.apply(updateSets.size()));
     }
 
     public boolean contains(Object o) {

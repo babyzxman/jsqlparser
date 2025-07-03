@@ -672,7 +672,7 @@ public class TablesNamesFinder<Void>
     }
 
     @Override
-    public <S> Void visit(ExpressionList<?> expressionList, S context) {
+    public <S> Void visit(ExpressionList<? extends Expression> expressionList, S context) {
         for (Expression expression : expressionList) {
             expression.accept(this, context);
         }

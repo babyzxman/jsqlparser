@@ -17,6 +17,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.StringReader;
+import java.lang.reflect.Array;
+import java.util.Arrays;
 import java.util.List;
 import net.sf.jsqlparser.JSQLParserException;
 import net.sf.jsqlparser.parser.CCJSqlParserManager;
@@ -86,7 +88,7 @@ public class TruncateMultipleTablesTest {
         String statement = "TRUNCATE TABLE foo, bar";
         assertSqlCanBeParsedAndDeparsed(statement);
         assertDeparse(new Truncate()
-            .withTables(List.of(new Table("foo"), new Table("bar")))
+            .withTables(Arrays.asList(new Table("foo"), new Table("bar")))
             .withTableToken(true), statement);
     }
 
@@ -95,7 +97,7 @@ public class TruncateMultipleTablesTest {
         String statement = "TRUNCATE TABLE foo, bar CASCADE";
         assertSqlCanBeParsedAndDeparsed(statement);
         assertDeparse(new Truncate()
-            .withTables(List.of(new Table("foo"), new Table("bar")))
+            .withTables(Arrays.asList(new Table("foo"), new Table("bar")))
             .withTableToken(true)
             .withCascade(true), statement);
     }

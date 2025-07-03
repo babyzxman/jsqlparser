@@ -141,8 +141,8 @@ public class DropPipeOperator extends PipeOperator {
         return columns.iterator();
     }
 
-    public <T> T[] toArray(IntFunction<T[]> generator) {
-        return columns.toArray(generator);
+    public Column[] toArray(IntFunction<Column[]> generator) {
+        return columns.toArray(generator.apply(columns.size()));
     }
 
     public boolean add(Column column) {

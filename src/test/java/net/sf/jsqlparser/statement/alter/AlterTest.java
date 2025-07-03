@@ -9,6 +9,7 @@
  */
 package net.sf.jsqlparser.statement.alter;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -2006,7 +2007,7 @@ public class AlterTest {
         assertEquals("idx_name", index.getName());
         assertEquals("INDEX", index.getIndexKeyword());
         assertEquals("BTREE", index.getUsing());
-        assertEquals(List.of("col"), index.getColumnsNames());
+        assertEquals(Collections.singletonList("col"), index.getColumnsNames());
 
         assertSqlCanBeParsedAndDeparsed(sql);
     }
