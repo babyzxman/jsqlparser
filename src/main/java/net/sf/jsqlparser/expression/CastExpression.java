@@ -16,6 +16,7 @@ import net.sf.jsqlparser.statement.select.Select;
 
 import java.util.ArrayList;
 import java.util.Set;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -87,7 +88,7 @@ public class CastExpression extends ASTNodeAccessImpl implements Expression {
     }
 
     public static boolean isOf(ColDataType colDataType, DataType... types) {
-        return Set.of(types).contains(DataType.from(colDataType.getDataType()));
+        return Arrays.asList(types).contains(DataType.from(colDataType.getDataType()));
     }
 
     public static boolean isTime(ColDataType colDataType) {
@@ -237,7 +238,7 @@ public class CastExpression extends ASTNodeAccessImpl implements Expression {
     }
 
     public boolean isOf(DataType... types) {
-        return Set.of(types).contains(DataType.from(colDataType.getDataType()));
+        return Arrays.asList(types).contains(DataType.from(colDataType.getDataType()));
     }
 
     public boolean isTime() {
