@@ -152,6 +152,11 @@ import net.sf.jsqlparser.statement.grant.Grant;
 import net.sf.jsqlparser.statement.insert.Insert;
 import net.sf.jsqlparser.statement.merge.Merge;
 import net.sf.jsqlparser.statement.refresh.RefreshMaterializedViewStatement;
+import net.sf.jsqlparser.statement.spark.CacheTableStatement;
+import net.sf.jsqlparser.statement.spark.LoadDataStatement;
+import net.sf.jsqlparser.statement.spark.MsckRepairTableStatement;
+import net.sf.jsqlparser.statement.spark.RefreshTableStatement;
+import net.sf.jsqlparser.statement.spark.UncacheTableStatement;
 import net.sf.jsqlparser.statement.select.AllColumns;
 import net.sf.jsqlparser.statement.select.AllTableColumns;
 import net.sf.jsqlparser.statement.select.FromItemVisitor;
@@ -1261,6 +1266,44 @@ public class TablesNamesFinder implements SelectVisitor, FromItemVisitor, Expres
     @Override
     public void visit(UnsupportedStatement unsupportedStatement) {
         // no tables involved in this statement
+    }
+
+    @Override
+    public void visit(LoadDataStatement loadDataStatement) {
+        if (loadDataStatement.getTable() != null) {
+            visit(loadDataStatement.getTable());
+        }
+    }
+
+    @Override
+    public void visit(CacheTableStatement cacheTableStatement) {
+        if (cacheTableStatement.getTable() != null) {
+            visit(cacheTableStatement.getTable());
+        }
+        if (cacheTableStatement.getSelect() != null) {
+            cacheTableStatement.getSelect().accept((SelectVisitor) this);
+        }
+    }
+
+    @Override
+    public void visit(UncacheTableStatement uncacheTableStatement) {
+        if (uncacheTableStatement.getTable() != null) {
+            visit(uncacheTableStatement.getTable());
+        }
+    }
+
+    @Override
+    public void visit(RefreshTableStatement refreshTableStatement) {
+        if (refreshTableStatement.getTable() != null) {
+            visit(refreshTableStatement.getTable());
+        }
+    }
+
+    @Override
+    public void visit(MsckRepairTableStatement msckRepairTableStatement) {
+        if (msckRepairTableStatement.getTable() != null) {
+            visit(msckRepairTableStatement.getTable());
+        }
     }
 
     @Override

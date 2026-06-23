@@ -46,6 +46,9 @@ public class Insert implements Statement {
     private OutputClause outputClause;
     private InsertConflictTarget conflictTarget;
     private InsertConflictAction conflictAction;
+    private boolean overwrite = false;
+    private boolean useTableKeyword = false;
+    private List<String> partitionDefinition = null;
 
     public List<UpdateSet> getDuplicateUpdateSets() {
         return duplicateUpdateSets;
@@ -202,6 +205,30 @@ public class Insert implements Statement {
         return this;
     }
 
+    public boolean isOverwrite() {
+        return overwrite;
+    }
+
+    public void setOverwrite(boolean overwrite) {
+        this.overwrite = overwrite;
+    }
+
+    public boolean isUseTableKeyword() {
+        return useTableKeyword;
+    }
+
+    public void setUseTableKeyword(boolean useTableKeyword) {
+        this.useTableKeyword = useTableKeyword;
+    }
+
+    public List<String> getPartitionDefinition() {
+        return partitionDefinition;
+    }
+
+    public void setPartitionDefinition(List<String> partitionDefinition) {
+        this.partitionDefinition = partitionDefinition;
+    }
+
     @Override
     @SuppressWarnings({"PMD.CyclomaticComplexity", "PMD.NPathComplexity"})
     public String toString() {
@@ -227,8 +254,21 @@ public class Insert implements Statement {
         if (modifierIgnore) {
             sql.append("IGNORE ");
         }
-        sql.append("INTO ");
+        if (overwrite) {
+            sql.append("OVERWRITE ");
+            if (useTableKeyword) {
+                sql.append("TABLE ");
+            }
+        } else {
+            sql.append("INTO ");
+            if (useTableKeyword) {
+                sql.append("TABLE ");
+            }
+        }
         sql.append(table).append(" ");
+        if (partitionDefinition != null && !partitionDefinition.isEmpty()) {
+            sql.append("PARTITION (").append(String.join(", ", partitionDefinition)).append(") ");
+        }
 
         if (columns != null) {
             sql.append("(");

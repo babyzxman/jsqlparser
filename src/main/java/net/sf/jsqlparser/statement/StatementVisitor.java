@@ -36,6 +36,11 @@ import net.sf.jsqlparser.statement.show.ShowTablesStatement;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.spark.CacheTableStatement;
+import net.sf.jsqlparser.statement.spark.LoadDataStatement;
+import net.sf.jsqlparser.statement.spark.MsckRepairTableStatement;
+import net.sf.jsqlparser.statement.spark.RefreshTableStatement;
+import net.sf.jsqlparser.statement.spark.UncacheTableStatement;
 
 public interface StatementVisitor {
 
@@ -126,4 +131,14 @@ public interface StatementVisitor {
     void visit(AlterSystemStatement alterSystemStatement);
 
     void visit(UnsupportedStatement unsupportedStatement);
+
+    void visit(LoadDataStatement loadDataStatement);
+
+    void visit(CacheTableStatement cacheTableStatement);
+
+    void visit(UncacheTableStatement uncacheTableStatement);
+
+    void visit(RefreshTableStatement refreshTableStatement);
+
+    void visit(MsckRepairTableStatement msckRepairTableStatement);
 }

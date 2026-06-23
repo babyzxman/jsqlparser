@@ -23,6 +23,8 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.OracleHierarchicalExpression;
 import net.sf.jsqlparser.expression.OracleHint;
 import net.sf.jsqlparser.expression.WindowDefinition;
+import net.sf.jsqlparser.expression.operators.relational.ExpressionList;
+import net.sf.jsqlparser.schema.Column;
 import net.sf.jsqlparser.schema.Table;
 
 @SuppressWarnings({"PMD.CyclomaticComplexity"})
@@ -70,6 +72,10 @@ public class PlainSelect extends Select {
     private boolean useWithNoLog = false;
 
     private Table intoTempTable = null;
+
+    private List<OrderByElement> sortByElements;
+    private ExpressionList<Column> distributeByElements;
+    private ExpressionList<Column> clusterByElements;
 
     @Deprecated
     public boolean isUseBrackets() {
@@ -256,6 +262,30 @@ public class PlainSelect extends Select {
     public PlainSelect withIntoTempTable(Table intoTempTable) {
         this.setIntoTempTable(intoTempTable);
         return this;
+    }
+
+    public List<OrderByElement> getSortByElements() {
+        return sortByElements;
+    }
+
+    public void setSortByElements(List<OrderByElement> sortByElements) {
+        this.sortByElements = sortByElements;
+    }
+
+    public ExpressionList<Column> getDistributeByElements() {
+        return distributeByElements;
+    }
+
+    public void setDistributeByElements(ExpressionList<Column> distributeByElements) {
+        this.distributeByElements = distributeByElements;
+    }
+
+    public ExpressionList<Column> getClusterByElements() {
+        return clusterByElements;
+    }
+
+    public void setClusterByElements(ExpressionList<Column> clusterByElements) {
+        this.clusterByElements = clusterByElements;
     }
 
     @Override
@@ -574,6 +604,16 @@ public class PlainSelect extends Select {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         super.appendTo(builder);
+
+        if (sortByElements != null) {
+            builder.append(" SORT BY ").append(sortByElements.stream().map(Object::toString).collect(joining(", ")));
+        }
+        if (distributeByElements != null) {
+            builder.append(" DISTRIBUTE BY ").append(distributeByElements.stream().map(Object::toString).collect(joining(", ")));
+        }
+        if (clusterByElements != null) {
+            builder.append(" CLUSTER BY ").append(clusterByElements.stream().map(Object::toString).collect(joining(", ")));
+        }
 
         if (optimizeFor != null) {
             builder.append(optimizeFor);

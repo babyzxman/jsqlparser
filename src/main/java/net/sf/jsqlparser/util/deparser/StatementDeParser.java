@@ -56,6 +56,11 @@ import net.sf.jsqlparser.statement.show.ShowTablesStatement;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.spark.CacheTableStatement;
+import net.sf.jsqlparser.statement.spark.LoadDataStatement;
+import net.sf.jsqlparser.statement.spark.MsckRepairTableStatement;
+import net.sf.jsqlparser.statement.spark.RefreshTableStatement;
+import net.sf.jsqlparser.statement.spark.UncacheTableStatement;
 
 public class StatementDeParser extends AbstractDeParser<Statement> implements StatementVisitor {
 
@@ -360,5 +365,30 @@ public class StatementDeParser extends AbstractDeParser<Statement> implements St
     @Override
     public void visit(UnsupportedStatement unsupportedStatement) {
         unsupportedStatement.appendTo(buffer);
+    }
+
+    @Override
+    public void visit(LoadDataStatement loadDataStatement) {
+        buffer.append(loadDataStatement.toString());
+    }
+
+    @Override
+    public void visit(CacheTableStatement cacheTableStatement) {
+        buffer.append(cacheTableStatement.toString());
+    }
+
+    @Override
+    public void visit(UncacheTableStatement uncacheTableStatement) {
+        buffer.append(uncacheTableStatement.toString());
+    }
+
+    @Override
+    public void visit(RefreshTableStatement refreshTableStatement) {
+        buffer.append(refreshTableStatement.toString());
+    }
+
+    @Override
+    public void visit(MsckRepairTableStatement msckRepairTableStatement) {
+        buffer.append(msckRepairTableStatement.toString());
     }
 }

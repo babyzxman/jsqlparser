@@ -36,6 +36,11 @@ import net.sf.jsqlparser.statement.show.ShowTablesStatement;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.spark.CacheTableStatement;
+import net.sf.jsqlparser.statement.spark.LoadDataStatement;
+import net.sf.jsqlparser.statement.spark.MsckRepairTableStatement;
+import net.sf.jsqlparser.statement.spark.RefreshTableStatement;
+import net.sf.jsqlparser.statement.spark.UncacheTableStatement;
 
 @SuppressWarnings({"PMD.UncommentedEmptyMethodBody"})
 public class StatementVisitorAdapter implements StatementVisitor {
@@ -228,4 +233,19 @@ public class StatementVisitorAdapter implements StatementVisitor {
     public void visit(RefreshMaterializedViewStatement materializedView) {
 
     }
+
+    @Override
+    public void visit(LoadDataStatement loadDataStatement) {}
+
+    @Override
+    public void visit(CacheTableStatement cacheTableStatement) {}
+
+    @Override
+    public void visit(UncacheTableStatement uncacheTableStatement) {}
+
+    @Override
+    public void visit(RefreshTableStatement refreshTableStatement) {}
+
+    @Override
+    public void visit(MsckRepairTableStatement msckRepairTableStatement) {}
 }

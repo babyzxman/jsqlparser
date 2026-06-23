@@ -58,6 +58,11 @@ import net.sf.jsqlparser.statement.show.ShowTablesStatement;
 import net.sf.jsqlparser.statement.truncate.Truncate;
 import net.sf.jsqlparser.statement.update.Update;
 import net.sf.jsqlparser.statement.upsert.Upsert;
+import net.sf.jsqlparser.statement.spark.CacheTableStatement;
+import net.sf.jsqlparser.statement.spark.LoadDataStatement;
+import net.sf.jsqlparser.statement.spark.MsckRepairTableStatement;
+import net.sf.jsqlparser.statement.spark.RefreshTableStatement;
+import net.sf.jsqlparser.statement.spark.UncacheTableStatement;
 import net.sf.jsqlparser.util.validation.ValidationCapability;
 import net.sf.jsqlparser.util.validation.metadata.NamedObject;
 
@@ -314,4 +319,19 @@ public class StatementValidator extends AbstractValidator<Statement> implements 
     public void visit(UnsupportedStatement unsupportedStatement) {
 
     }
+
+    @Override
+    public void visit(LoadDataStatement loadDataStatement) {}
+
+    @Override
+    public void visit(CacheTableStatement cacheTableStatement) {}
+
+    @Override
+    public void visit(UncacheTableStatement uncacheTableStatement) {}
+
+    @Override
+    public void visit(RefreshTableStatement refreshTableStatement) {}
+
+    @Override
+    public void visit(MsckRepairTableStatement msckRepairTableStatement) {}
 }
